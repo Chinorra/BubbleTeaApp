@@ -3,8 +3,8 @@ const BaseModel = require("./baseModel");
 const handlePassword = require("../helpers/handlePassword");
 
 class UserModel extends BaseModel {
-  async login({ email, password }) {
-    const user = await User.findOne({ email });
+  async login({ username, password }) {
+    const user = await User.findOne({ username });
     if (!user) throw new Error("User not found");
     const isPasswordMatch = await handlePassword.comparePassword(
       password,

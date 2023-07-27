@@ -3,10 +3,14 @@ const ProductModel = require('../models/productModel');
 const handlePassword = require("../helpers/handlePassword");
 const User = require('../entities/userSchema')
 
+var randtoken = require('rand-token')
+
 var jwt = require("jsonwebtoken");
 const upload = require("../helpers/uploadImage");
 
 const privateKey = process.env.PRIVATE_KEY;
+
+var refreshTokens = {};
 
 const createUser = async (req, res) => {
   try {
@@ -29,8 +33,8 @@ const createUser = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await UserModel.login({ email, password });
+    const { username, password } = req.body;
+    const user = await UserModel.login({ username, password });
     const dataToken = {
       _id: user._id,
       username: user.username,
@@ -40,8 +44,11 @@ const login = async (req, res) => {
     };
     if (user) {
       var token = jwt.sign(dataToken, privateKey);
+      var refreshToken = randtoken.uid(256)
+      refreshTokens[refreshToken] = username
       res.status(201).json({
-        token,
+        token: token,
+        refreshToken: refreshToken,
         msg: "User logged in successfully",
       });
     }
