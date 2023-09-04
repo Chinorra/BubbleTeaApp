@@ -92,6 +92,7 @@ class BaseModel {
           if(data==null){
               return []
           }
+          console.log(page, limit);
           return data
       } catch (error) {
           throw new Error(error)

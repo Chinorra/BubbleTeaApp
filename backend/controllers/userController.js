@@ -1,7 +1,6 @@
 const UserModel = require("../models/userModel");
 const ProductModel = require('../models/productModel');
 const handlePassword = require("../helpers/handlePassword");
-const User = require('../entities/userSchema')
 
 var randtoken = require('rand-token')
 
@@ -35,21 +34,31 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await UserModel.login({ username, password });
+    console.log(user);
     const dataToken = {
       _id: user._id,
       username: user.username,
       email: user.email,
       password: user.password,
-      role: user.role
+      role: user.role,
+      address: user.address,
+      avatar: user.avatar
     };
     if (user) {
-      var token = jwt.sign(dataToken, privateKey);
+      var accessToken = jwt.sign(dataToken, privateKey);
       var refreshToken = randtoken.uid(256)
       refreshTokens[refreshToken] = username
+      console.log('login success');
       res.status(201).json({
-        token: token,
+        accessToken: accessToken,
         refreshToken: refreshToken,
         msg: "User logged in successfully",
+          username: user.username,
+          user_id: user._id,
+          email: user.email,
+          phone: user.phone,
+          address: user.address,
+          avatar: user.avatar
       });
     }
   } catch (e) {
@@ -80,11 +89,13 @@ const updateUser = async (req, res) => {
       req.body,
       { new: true }
     );
+    console.log(user);
     if(!user) {
       return res.status(400).json('User not found')
     }
     res.status(200).json({
       msg: "update user success",
+      user: user
     });
   } catch (e) {
     res.status(500).json('Server error');
@@ -117,6 +128,7 @@ const updatePassword = async (req, res) => {
     await UserModel.updateOne({ _id: userId }, { password: newHashPassword });
     res.status(200).json({
       msg: "update password",
+
     });
   } catch (e) {
     console.log('err: ', e);
@@ -256,6 +268,7 @@ const getUsers = async (req, res) => {
 }
 
 const uploadAvatar = async (req, res) => {
+  console.log('res');
   upload(req, res, function (err) {
       if (err) {
           return res.status(400).json({
@@ -271,6 +284,26 @@ const uploadAvatar = async (req, res) => {
   })
 }
 
+const getProduct = async (req, res) => {
+  try {
+    console.log('get products');
+    const products = await ProductModel.findMany(
+      {},
+      // 3,
+      // 3,
+    );
+    console.log(products);
+    if (!products || products.length == 0) {
+      return res.status(400).json("Product not found");
+    }
+
+ 
+    res.status(200).json(products);
+  } catch (e) {
+    res.status(500).json("Error server");
+  }
+};
+
 module.exports = {
   createUser,
   getCurrentUser,
@@ -283,5 +316,6 @@ module.exports = {
   getOneProduct,
   addToCart,
   getUsers,
-  uploadAvatar
+  uploadAvatar,
+  getProduct
 };

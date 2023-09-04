@@ -17,35 +17,6 @@ const createProduct = async (req, res) => {
   }
 };
 
-
-
-const getProduct = async (req, res) => {
-  try {
-    const products = await ProductModel.findMany(
-      { productname: { $regex: req.body.productname } },
-      1,
-      20,
-      { createAt: -1 },
-      {}
-    );
-    if (!products || products.length == 0) {
-      return res.status(400).json("Product not found");
-    }
-
-    /*
-        const prices = products.map(product => parseFloat(product.price));
-        const total = prices.reduce((sum, current) => sum + current, 0)
-        const formTotal = total.toFixed(3);
-        const totalPrice = `${formTotal}đ`
-        console.log(totalPrice);
-        */
-
-    res.status(200).json(products);
-  } catch (e) {
-    res.status(500).json("Error server");
-  }
-};
-
 const updateProduct = async (req, res) => {
   try {
     const { _id, productname, price } = req.body;
@@ -91,7 +62,6 @@ const queryProducts = async (req, res) => {
 
 module.exports = {
   createProduct,
-  getProduct,
   updateProduct,
   deleteProduct,
   queryProducts

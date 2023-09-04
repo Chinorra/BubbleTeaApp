@@ -10,9 +10,10 @@ userRouter.get('/current',userController.getCurrentUser);
 userRouter.get('/name',userController.getUser);
 userRouter.get('/list',userController.getListUsepopulate);
 userRouter.get('/users',userController.getUsers);
-userRouter.get('/product',userController.getOneProduct);
+userRouter.get('/product', userController.getProduct);
+// userRouter.get('/product',userController.getOneProduct);
 userRouter.delete('/delete', userController.deleteUser);
-userRouter.patch('/info',
+userRouter.patch('/update',
 middlewareValidate(updateUserSchema),
  userController.updateUser);
 userRouter.patch('/password',

@@ -11,16 +11,16 @@ var validatePassword = function (password) {
   return re.test(password)
 }
 
-const addressSchema = new Schema({
-  street: {
-    type: String,
-    required: true
-  },
-  city : {
-    type: String,
-    required: true
-  }
-})
+// const addressSchema = new Schema({
+//   street: {
+//     type: String,
+//     required: true
+//   },
+//   city : {
+//     type: String,
+//     required: true
+//   }
+// })
 
 const UserSchema = new Schema({
   username: {
@@ -42,6 +42,9 @@ const UserSchema = new Schema({
       "Please fill a valid email address",
     ],
   },
+  avatar: {
+    type: Object
+  },
   password: {
     type: String,
     required: true,
@@ -54,7 +57,6 @@ const UserSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
     validate: {
       validator: function (value) {
         // The regular expression to validate Vietnamese phone numbers
@@ -64,9 +66,14 @@ const UserSchema = new Schema({
     }
   },
   address: {
-    type: addressSchema,
-    required: true
-  },
+    type: String,
+    validate: {
+      validator: function(value) {
+        // Use a regular expression to allow letters, numbers, and white spaces
+        return /^[a-zA-Z0-9\s]+$/.test(value);
+      }
+  }
+},
   role: {
     type: String,
     default: "member",

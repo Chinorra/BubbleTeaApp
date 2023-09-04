@@ -25,11 +25,8 @@ const updateUserSchema = Joi.object({
         ,
         phone: Joi.string()
         .regex(/^(?:\+84|0)(?:\d){9,10}$/),
-        address: Joi.object({
-            street: Joi.string(),
-            city: Joi.string()
-        })
-
+        address: Joi.string()
+        .regex(/^[a-zA-Z0-9\s]+$/)
     }),
     query: Joi.object({}),
     params: Joi.object({})
